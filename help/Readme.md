@@ -127,6 +127,7 @@ In the directory $PY_FASTER_RCNN, run the following command in the shell.
 ```sh
 $ ./tools/train_faster_rcnn_alt_opt.py --gpu 0 --net_name INRIA_Person --weights data/imagenet_models/VGG_CNN_M_1024.v2.caffemodel --imdb inria_train --cfg config.yml
 ```
+**NB** : Make sure the config.yml file is in the directory $PY_FASTER_RCNN.
 
 Where:    
 >--net_name is the folder name in $PY_FASTER_RCNN/models    
