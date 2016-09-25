@@ -36,16 +36,16 @@ def parse_args():
                         default=0, type=int)
     parser.add_argument('--net_name', dest='net_name',
                         help='network name (e.g., "ZF")',
-                        default=None, type=str)
+                        default="INRIA_Person/VGG_CNN_M_1024", type=str) # I added default value
     parser.add_argument('--weights', dest='pretrained_model',
                         help='initialize with pretrained model weights',
-                        default=None, type=str)
+                        default='../data/imagenet_models/VGG_CNN_M_1024.v2.caffemodel', type=str) # I added default value
     parser.add_argument('--cfg', dest='cfg_file',
                         help='optional config file',
-                        default=None, type=str)
+                        default='../config.yml', type=str)
     parser.add_argument('--imdb', dest='imdb_name',
                         help='dataset to train on',
-                        default='voc_2007_trainval', type=str)
+                        default='inria_train', type=str) # default value changed
     parser.add_argument('--set', dest='set_cfgs',
                         help='set config keys', default=None,
                         nargs=argparse.REMAINDER)
@@ -78,7 +78,6 @@ def get_solvers(net_name):
     solvers = [os.path.join(cfg.MODELS_DIR, *s) for s in solvers]
     # Iterations for each training stage
     max_iters = [80000, 40000, 80000, 40000]
-    # max_iters = [100, 100, 100, 100]
     # Test prototxt for the RPN
     rpn_test_prototxt = os.path.join(
         cfg.MODELS_DIR, net_name, n, 'rpn_test.pt')
@@ -128,8 +127,8 @@ def train_rpn(queue=None, imdb_name=None, init_model=None, solver=None,
                             pretrained_model=init_model,
                             max_iters=max_iters)
     # Cleanup all but the final model
-    for i in model_paths[:-1]:
-        os.remove(i)
+    # for i in model_paths[:-1]:
+    #     os.remove(i)
     rpn_model_path = model_paths[-1]
     # Send final model path through the multiprocessing queue
     queue.put({'model_path': rpn_model_path})
@@ -194,8 +193,8 @@ def train_fast_rcnn(queue=None, imdb_name=None, init_model=None, solver=None,
                             pretrained_model=init_model,
                             max_iters=max_iters)
     # Cleanup all but the final model
-    for i in model_paths[:-1]:
-        os.remove(i)
+    # for i in model_paths[:-1]:
+    #     os.remove(i)
     fast_rcnn_model_path = model_paths[-1]
     # Send Fast R-CNN model path over the multiprocessing queue
     queue.put({'model_path': fast_rcnn_model_path})

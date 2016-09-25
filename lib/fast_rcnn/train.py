@@ -19,7 +19,7 @@ import google.protobuf as pb2
 
 class SolverWrapper(object):
     """A simple wrapper around Caffe's solver.
-    This wrapper gives us control over he snapshotting process, which we
+    This wrapper gives us control over the snapshotting process, which we
     use to unnormalize the learned bounding-box regression weights.
     """
 
@@ -68,12 +68,8 @@ class SolverWrapper(object):
             orig_1 = net.params['bbox_pred'][1].data.copy()
 
             # scale and shift with bbox reg unnormalization; then save snapshot
-            net.params['bbox_pred'][0].data[...] = \
-                    (net.params['bbox_pred'][0].data *
-                     self.bbox_stds[:, np.newaxis])
-            net.params['bbox_pred'][1].data[...] = \
-                    (net.params['bbox_pred'][1].data *
-                     self.bbox_stds + self.bbox_means)
+            net.params['bbox_pred'][0].data[...] = (net.params['bbox_pred'][0].data * self.bbox_stds[:, np.newaxis])
+            net.params['bbox_pred'][1].data[...] = (net.params['bbox_pred'][1].data * self.bbox_stds + self.bbox_means)
 
         infix = ('_' + cfg.TRAIN.SNAPSHOT_INFIX
                  if cfg.TRAIN.SNAPSHOT_INFIX != '' else '')
@@ -98,17 +94,19 @@ class SolverWrapper(object):
         while self.solver.iter < max_iters:
             # Make one SGD update
             timer.tic()
-            self.solver.step(1)
+            self.solver.step(1) # actually finish one step of training
             timer.toc()
             if self.solver.iter % (10 * self.solver_param.display) == 0:
                 print 'speed: {:.3f}s / iter'.format(timer.average_time)
 
             if self.solver.iter % cfg.TRAIN.SNAPSHOT_ITERS == 0:
+                # pass # add comment
                 last_snapshot_iter = self.solver.iter
                 model_paths.append(self.snapshot())
 
         if last_snapshot_iter != self.solver.iter:
-            model_paths.append(self.snapshot())
+            pass  # add comment
+            # model_paths.append(self.snapshot())
         return model_paths
 
 def get_training_roidb(imdb):
@@ -153,8 +151,7 @@ def train_net(solver_prototxt, roidb, output_dir,
     """Train a Fast R-CNN network."""
 
     roidb = filter_roidb(roidb)
-    sw = SolverWrapper(solver_prototxt, roidb, output_dir,
-                       pretrained_model=pretrained_model)
+    sw = SolverWrapper(solver_prototxt, roidb, output_dir, pretrained_model=pretrained_model)
 
     print 'Solving...'
     model_paths = sw.train_model(max_iters)

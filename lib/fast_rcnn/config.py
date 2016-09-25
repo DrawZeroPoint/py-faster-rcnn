@@ -67,8 +67,9 @@ __C.TRAIN.BBOX_REG = True
 # be used as a bounding-box regression training example
 __C.TRAIN.BBOX_THRESH = 0.5
 
-# Iterations between snapshots
-__C.TRAIN.SNAPSHOT_ITERS = 10000
+# Iterations between snapshots, this should be changed when choose a different max_iters
+# here I need change if use smaller max_iters
+__C.TRAIN.SNAPSHOT_ITERS = 5000
 
 # solver.prototxt specifies the snapshot path prefix, this adds an optional
 # infix to yield the path: <prefix>[_<infix>]_iters_XYZ.caffemodel
@@ -193,7 +194,8 @@ __C.ROOT_DIR = osp.abspath(osp.join(osp.dirname(__file__), '..', '..'))
 __C.DATA_DIR = osp.abspath(osp.join(__C.ROOT_DIR, 'data'))
 
 # Model directory
-__C.MODELS_DIR = osp.abspath(osp.join(__C.ROOT_DIR, 'models', 'pascal_voc'))
+# I changed the last param from pascal_voc to INRIA_Person
+__C.MODELS_DIR = osp.abspath(osp.join(__C.ROOT_DIR, 'models'))
 
 # Name (or path to) the matlab executable
 __C.MATLAB = 'matlab'
